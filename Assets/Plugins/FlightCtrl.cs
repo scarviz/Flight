@@ -5,8 +5,10 @@ using System;
 public class FlightCtrl : MonoBehaviour {
     readonly string GAME_OBJ_NM = "PlaneGameObj";
     readonly string PLUGIN_CLASS_PATH = "com.github.scarviz.flightctrl4unity.ServiceCtrl";
-    
+
     public static string ACTION_DOWN = "ACTION_DOWN";
+    public static string ROLL = "ROLL";
+    public static string PITCH = "PITCH";
 
     private Plane plane;
     /// <summary>
@@ -47,11 +49,43 @@ public class FlightCtrl : MonoBehaviour {
     {
         Debug.Log("Call CallbackMess");
 
+        if (String.IsNullOrEmpty(mess)) {
+            return;
+        }
+        /*
+        var paramAry = mess.Split(',');
+        if (paramAry == null || paramAry.Length <= 0) 
+        {
+            return;
+        }
+
+        var key = paramAry[0];
+        var val = 0f;
+        if (1 <= paramAry.Length) 
+        {
+            var paramVal = paramAry[1];
+            if (!float.TryParse(paramVal, out val)) 
+            {
+                val = 0f;
+            }
+        }
+        */
         if (ACTION_DOWN == mess)
         {
             Debug.Log("action down");
             plane.Speed(Plane.Ctrl.SPEED_UP);
         }
+            /*
+        else if (ROLL == key)
+        {
+            Debug.Log("roll");
+            plane.Speed(Plane.Ctrl.ROLL, val);
+        }
+        else if (PITCH == key)
+        {
+            Debug.Log("pitch");
+            plane.Speed(Plane.Ctrl.PITCH, val);
+        }*/
     }
 
     /// <summary>

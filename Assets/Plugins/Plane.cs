@@ -24,6 +24,8 @@ public class Plane : MonoBehaviour
         NONE = 0,
         SPEED_UP = 1,
         SPEED_DOWN = 2,
+        ROLL = 3,
+        PITCH = 4,
     }
 
     void Start()
@@ -36,7 +38,7 @@ public class Plane : MonoBehaviour
         Speed(Ctrl.NONE);
     }
 
-    public void Speed(Ctrl ctrl)
+    public void Speed(Ctrl ctrl, float val = 0f)
     {
         if (Input.GetKey(KeyCode.Space) || ctrl == Ctrl.SPEED_UP)
         {
@@ -50,6 +52,24 @@ public class Plane : MonoBehaviour
             Mathf.Repeat(1, Time.time);
             speed = speed - speeddecrease;
         }
+        /*
+        if (ctrl == Ctrl.ROLL)
+        {
+            var spd = Obj.velocity.magnitude;
+            var rigidbody = Obj.GetComponent<Rigidbody>();
+
+            var H = val * zrotForce;
+            rigidbody.AddRelativeTorque(0, 0, H * (spd / 100));
+        }
+        if (ctrl == Ctrl.PITCH)
+        {
+            var spd = Obj.velocity.magnitude;
+            var rigidbody = Obj.GetComponent<Rigidbody>();
+
+            var V = val * zrotForce;
+            rigidbody.AddRelativeTorque(0, 0, V * (spd / 100));
+        }
+        */
     }
 
 
@@ -63,12 +83,14 @@ public class Plane : MonoBehaviour
         var H = (Input.GetAxis("Horizontal")) * zrotForce;
         if (H != 0)
         {
+            Debug.Log("Horizontal");
             rigidbody.AddRelativeTorque(0, 0, H * (spd / 100));
         }
 
         var V = (Input.GetAxis("Vertical")) * rotupForce;
         if (V != 0)
         {
+            Debug.Log("Vertical");
             rigidbody.AddRelativeTorque(V * (spd / 100), 0, 0);
         }
 
