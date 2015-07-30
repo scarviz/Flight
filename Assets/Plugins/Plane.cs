@@ -19,6 +19,9 @@ public class Plane : MonoBehaviour
     public int minlift;
     public bool hit = false;
 
+    /// <summary>
+    /// ëÄçÏèÛë‘
+    /// </summary>
     public enum Ctrl 
     {
         NONE = 0,
@@ -52,26 +55,24 @@ public class Plane : MonoBehaviour
             Mathf.Repeat(1, Time.time);
             speed = speed - speeddecrease;
         }
-        /*
+
+        var spd = Obj.velocity.magnitude;
+        var rigidbody = Obj.GetComponent<Rigidbody>();
+
+        rigidbody.AddRelativeForce(0, 0, -speed);
+
         if (ctrl == Ctrl.ROLL)
         {
-            var spd = Obj.velocity.magnitude;
-            var rigidbody = Obj.GetComponent<Rigidbody>();
-
             var H = val * zrotForce;
             rigidbody.AddRelativeTorque(0, 0, H * (spd / 100));
         }
         if (ctrl == Ctrl.PITCH)
         {
-            var spd = Obj.velocity.magnitude;
-            var rigidbody = Obj.GetComponent<Rigidbody>();
-
             var V = val * zrotForce;
-            rigidbody.AddRelativeTorque(0, 0, V * (spd / 100));
+            rigidbody.AddRelativeTorque(V * (spd / 100), 0, 0);
         }
-        */
+        
     }
-
 
     void Update()
     {
@@ -83,14 +84,14 @@ public class Plane : MonoBehaviour
         var H = (Input.GetAxis("Horizontal")) * zrotForce;
         if (H != 0)
         {
-            Debug.Log("Horizontal");
+            Debug.Log("Horizontal:" + H.ToString());
             rigidbody.AddRelativeTorque(0, 0, H * (spd / 100));
         }
 
         var V = (Input.GetAxis("Vertical")) * rotupForce;
         if (V != 0)
         {
-            Debug.Log("Vertical");
+            Debug.Log("Vertical:" + V.ToString());
             rigidbody.AddRelativeTorque(V * (spd / 100), 0, 0);
         }
 

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using System.Collections.Generic;
 
 public class FlightCtrl : MonoBehaviour {
     readonly string GAME_OBJ_NM = "PlaneGameObj";
@@ -20,6 +21,9 @@ public class FlightCtrl : MonoBehaviour {
         StartService();
 
         plane = GetComponentInChildren<Plane>();
+        _processing.Add(Plane.Ctrl.SPEED_UP, false);
+        _processing.Add(Plane.Ctrl.ROLL, false);
+        _processing.Add(Plane.Ctrl.PITCH, false);
     }
 
     /// <summary>
@@ -41,6 +45,32 @@ public class FlightCtrl : MonoBehaviour {
         }
     }
 
+    private Dictionary<Plane.Ctrl, bool> _processing = new Dictionary<Plane.Ctrl, bool>();
+    /// <summary>
+    /// 処理中かどうか
+    /// </summary>
+    /// <param name="ctrl">操作</param>
+    /// <remarks>処理中かどうか</remarks>
+    private bool GetProcessing(Plane.Ctrl ctrl)
+    {
+        lock (this)
+        {
+            return _processing[ctrl];
+        }
+    }
+    /// <summary>
+    /// 処理状態を設定する
+    /// </summary>
+    /// <param name="ctrl">操作</param>
+    /// <param name="processing">処理状態</param>
+    private void SetProcessing(Plane.Ctrl ctrl, bool processing)
+    {
+        lock (this)
+        {
+            _processing[ctrl] = processing;
+        }
+    }
+
     /// <summary>
     /// Android Nativeプラグインからのコールバック用
     /// </summary>
@@ -52,16 +82,17 @@ public class FlightCtrl : MonoBehaviour {
         if (String.IsNullOrEmpty(mess)) {
             return;
         }
-        /*
-        var paramAry = mess.Split(',');
-        if (paramAry == null || paramAry.Length <= 0) 
+        
+        var paramAry = mess.Trim().Split(',');
+        if (paramAry == null || paramAry.Length <= 0)
         {
+            Debug.Log("not found split string");
             return;
         }
 
         var key = paramAry[0];
         var val = 0f;
-        if (1 <= paramAry.Length) 
+        if (1 < paramAry.Length) 
         {
             var paramVal = paramAry[1];
             if (!float.TryParse(paramVal, out val)) 
@@ -69,23 +100,34 @@ public class FlightCtrl : MonoBehaviour {
                 val = 0f;
             }
         }
-        */
-        if (ACTION_DOWN == mess)
+
+        if (ACTION_DOWN == mess && !GetProcessing(Plane.Ctrl.SPEED_UP))
         {
+            SetProcessing(Plane.Ctrl.SPEED_UP, true);
+
             Debug.Log("action down");
             plane.Speed(Plane.Ctrl.SPEED_UP);
+
+            SetProcessing(Plane.Ctrl.SPEED_UP, false);
         }
-            /*
-        else if (ROLL == key)
+        if (ROLL == key && !GetProcessing(Plane.Ctrl.ROLL))
         {
+            SetProcessing(Plane.Ctrl.ROLL, true);
+
             Debug.Log("roll");
-            plane.Speed(Plane.Ctrl.ROLL, val);
+            plane.Speed(Plane.Ctrl.ROLL, (1 - 1 / (val + 1)));
+
+            SetProcessing(Plane.Ctrl.ROLL, false);
         }
-        else if (PITCH == key)
+        if (PITCH == key && !GetProcessing(Plane.Ctrl.PITCH))
         {
+            SetProcessing(Plane.Ctrl.PITCH, true);
+
             Debug.Log("pitch");
-            plane.Speed(Plane.Ctrl.PITCH, val);
-        }*/
+            plane.Speed(Plane.Ctrl.PITCH, (1 - 1 / (val + 1)));
+
+            SetProcessing(Plane.Ctrl.PITCH, false);
+        }
     }
 
     /// <summary>
