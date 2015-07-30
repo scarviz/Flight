@@ -115,7 +115,8 @@ public class FlightCtrl : MonoBehaviour {
             SetProcessing(Plane.Ctrl.ROLL, true);
 
             Debug.Log("roll");
-            plane.Speed(Plane.Ctrl.ROLL, (1 - 1 / (val + 1)));
+            var roll = (1 - 1 / (val + 1)) * 4;
+            plane.Speed(Plane.Ctrl.ROLL, roll);
 
             SetProcessing(Plane.Ctrl.ROLL, false);
         }
@@ -124,7 +125,8 @@ public class FlightCtrl : MonoBehaviour {
             SetProcessing(Plane.Ctrl.PITCH, true);
 
             Debug.Log("pitch");
-            plane.Speed(Plane.Ctrl.PITCH, (1 - 1 / (val + 1)));
+            var pitch = (1 - 1 / (val + 1)) * 10;
+            plane.Speed(Plane.Ctrl.PITCH, pitch);
 
             SetProcessing(Plane.Ctrl.PITCH, false);
         }
