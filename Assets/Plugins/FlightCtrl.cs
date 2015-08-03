@@ -11,6 +11,9 @@ public class FlightCtrl : MonoBehaviour {
     public static string ROLL = "ROLL";
     public static string PITCH = "PITCH";
 
+    private static float GAIN_ROLL = 4;
+    private static float GAIN_PITCH = 10;
+
     private Plane plane;
     /// <summary>
     /// 初期化処理
@@ -114,8 +117,10 @@ public class FlightCtrl : MonoBehaviour {
         {
             SetProcessing(Plane.Ctrl.ROLL, true);
 
-            Debug.Log("roll");
-            var roll = (1 - 1 / (val + 1)) * 4;
+            // -180から180の値が来るので、-1から1までに変換する
+            var roll = (float)Math.Round((val / 180f) * GAIN_ROLL, 2);
+            Debug.Log("roll:"+ roll);
+
             plane.Speed(Plane.Ctrl.ROLL, roll);
 
             SetProcessing(Plane.Ctrl.ROLL, false);
@@ -124,8 +129,10 @@ public class FlightCtrl : MonoBehaviour {
         {
             SetProcessing(Plane.Ctrl.PITCH, true);
 
-            Debug.Log("pitch");
-            var pitch = (1 - 1 / (val + 1)) * 10;
+            // -180から180の値が来るので、-1から1までに変換する.
+            var pitch = (float)Math.Round((val / 180f) * GAIN_PITCH, 2);
+            Debug.Log("pitch:" + pitch);
+
             plane.Speed(Plane.Ctrl.PITCH, pitch);
 
             SetProcessing(Plane.Ctrl.PITCH, false);
